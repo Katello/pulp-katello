@@ -45,6 +45,7 @@ HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/https/repos"
 
 class YumCloneDistributor(Distributor):
 
+    #pylint: disable=E1002
     def __init__(self):
         super(YumCloneDistributor, self).__init__()
         self.cancelled = False
