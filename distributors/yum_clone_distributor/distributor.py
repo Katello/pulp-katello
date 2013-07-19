@@ -15,14 +15,14 @@ import gettext
 import shutil
 import time
 
-from pulp.server.managers.repo.distributor import RepoDistributorManager
-from pulp_rpm.yum_plugin import util
+#pylint: disable=F0401
 from pulp.plugins.distributor import Distributor
-
 import pulp.server.managers.repo._common as common_utils
+from pulp.server.managers.repo.distributor import RepoDistributorManager
 
-from pulp_rpm.common.ids import TYPE_ID_DISTRIBUTOR_EXPORT, TYPE_ID_DISTRO, TYPE_ID_DRPM, TYPE_ID_ERRATA, TYPE_ID_PKG_GROUP,\
-        TYPE_ID_PKG_CATEGORY, TYPE_ID_RPM, TYPE_ID_SRPM
+from pulp_rpm.yum_plugin import util
+from pulp_rpm.common.ids import TYPE_ID_DISTRO, TYPE_ID_DRPM, TYPE_ID_ERRATA, TYPE_ID_PKG_GROUP, \
+                                TYPE_ID_PKG_CATEGORY, TYPE_ID_RPM, TYPE_ID_SRPM
 
 _LOG = util.getLogger(__name__)
 _ = gettext.gettext
@@ -32,8 +32,8 @@ OPTIONAL_CONFIG_KEYS = ["source_distributor_id", "source_repo_id", "destination_
 
 YUM_CLONE_DISTRIBUTOR_TYPE = "yum_clone_distributor"
 
-HTTP_PUBLISH_DIR="/var/lib/pulp/published/http/repos"
-HTTPS_PUBLISH_DIR="/var/lib/pulp/published/https/repos"
+HTTP_PUBLISH_DIR = "/var/lib/pulp/published/http/repos"
+HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/https/repos"
 
 ###
 # Config Options Explained
@@ -45,6 +45,7 @@ HTTPS_PUBLISH_DIR="/var/lib/pulp/published/https/repos"
 
 class YumCloneDistributor(Distributor):
 
+    #pylint: disable=E1002
     def __init__(self):
         super(YumCloneDistributor, self).__init__()
         self.cancelled = False
@@ -56,12 +57,14 @@ class YumCloneDistributor(Distributor):
         return {
             'id'           : YUM_CLONE_DISTRIBUTOR_TYPE,
             'display_name' : 'Yum Clone Distributor',
-            'types'        : [TYPE_ID_RPM, TYPE_ID_SRPM, TYPE_ID_DRPM, TYPE_ID_ERRATA, TYPE_ID_DISTRO, TYPE_ID_PKG_CATEGORY, TYPE_ID_PKG_GROUP]
+            'types'        : [TYPE_ID_RPM, TYPE_ID_SRPM, TYPE_ID_DRPM, TYPE_ID_ERRATA, TYPE_ID_DISTRO, \
+                              TYPE_ID_PKG_CATEGORY, TYPE_ID_PKG_GROUP]
         }
 
     def add_error(self, message):
         self.summary["errors"].append(message)
 
+    #pylint: disable=W0613,R0201
     def validate_config(self, repo, config, related_repos):
         for key in REQUIRED_CONFIG_KEYS:
             value = config.get(key)
@@ -85,8 +88,8 @@ class YumCloneDistributor(Distributor):
 
         #lookup the source and destination distributors
         dist_manager = RepoDistributorManager()
-        destination_dist_config = dist_manager.get_distributor(repo.id, config.get('destination_distributor_id'))['config']
-        source_dist_config = dist_manager.get_distributor(config.get('source_repo_id'), config.get('source_distributor_id'))['config']
+        destination_dist_config = dist_manager.get_distributor(repo.id, 
+                                                               config.get('destination_distributor_id'))['config']
 
         #copy contents from source's working directory to destinations       
         source_working_dir = self.working_directory(config.get('source_repo_id'))

@@ -1,0 +1,2 @@
+script:
+  - "./misc/ci/pr_tests.sh"
