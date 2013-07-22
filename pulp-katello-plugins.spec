@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 22 2013 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
+- new package built with tito
+
 * Thu Jul 18 2013 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
 - new package built with tito
 
