@@ -29,8 +29,8 @@ BuildRequires:  python-setuptools
 BuildRequires:  python-nose
 BuildRequires:  rpm-python
 
-Requires: python-pulp-rpm-common = %{pulp_version}
-Requires: pulp-server = %{pulp_version}
+Requires: python-pulp-rpm-common
+Requires: pulp-server
 
 
 %description
@@ -68,9 +68,3 @@ rm -rf %{buildroot}
 %changelog
 * Mon Jul 22 2013 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
 - new package built with tito
-
-* Thu Jul 18 2013 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
-- new package built with tito
-
-* Mon Nov 12 2012 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
-- Initial Build
