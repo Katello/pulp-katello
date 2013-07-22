@@ -15,8 +15,8 @@
 
 
 Name: pulp-katello-plugins 
-Version: 0.1
-Release: 0.1%{?dist}
+Version: 0.2
+Release: 1%{?dist}
 Summary: Plugins useful for katello interactions with pulp  
 Group: Development/Languages
 License: GPLv2
@@ -66,5 +66,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 22 2013 Justin Sherrill <jsherril@redhat.com> 0.2-1
+- fixing rpm spec requires to not depend on specific pulp version
+  (jsherril@redhat.com)
+
 * Mon Jul 22 2013 Justin Sherrill <jsherril@redhat.com> 0.1-0.1
 - new package built with tito
