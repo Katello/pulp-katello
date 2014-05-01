@@ -18,7 +18,7 @@ setup(
     author_email='katello-devel@redhat.com',
     entry_points = {
         'pulp.distributors': [
-            'distributor = distributors.yum_clone_distributor.distributor:entry_point',
+            'distributor = pulp_katello.distributors.yum_clone_distributor.distributor:entry_point',
         ],
     }
 )

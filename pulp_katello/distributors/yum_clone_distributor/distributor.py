@@ -17,7 +17,6 @@ import time
 
 #pylint: disable=F0401
 from pulp.plugins.distributor import Distributor
-import pulp.server.managers.repo._common as common_utils
 from pulp.server.managers.repo.distributor import RepoDistributorManager
 
 from pulp_rpm.yum_plugin import util
@@ -32,13 +31,18 @@ OPTIONAL_CONFIG_KEYS = ["source_distributor_id", "source_repo_id", "destination_
 
 YUM_CLONE_DISTRIBUTOR_TYPE = "yum_clone_distributor"
 
-HTTP_PUBLISH_DIR = "/var/lib/pulp/published/http/repos"
-HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/https/repos"
+MASTER_PUBLISH_DIR = "/var/lib/pulp/published/yum/master"
+HTTP_PUBLISH_DIR = "/var/lib/pulp/published/yum/http/repos"
+HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/yum/https/repos"
+
+def entry_point():
+    return YumCloneDistributor, {}
+
 
 ###
 # Config Options Explained
 ###
-# source_repo_id        - String: Id of the yum repo containing the 
+# source_repo_id        - String: Id of the yum repo containing the
 # source_distributor_id - String: Id of the yum distributor in pulp to copy the export from
 # destination_distributor_id - String: ID of th eyum distributor in pulp to copy the export to
 # -- plugins ------------------------------------------------------------------
@@ -79,33 +83,60 @@ class YumCloneDistributor(Distributor):
                 return False, msg
         return True, None
 
-    def working_directory(self, repo_id):
-        return common_utils.distributor_working_dir('yum_distributor', repo_id)
+    def find_yum_distributor(self, repo_id):
+        dist_manager = RepoDistributorManager()
+        for dist in dist_manager.get_distributors(repo_id):
+            if dist["distributor_type_id"] == 'yum_distributor':
+                return dist
+        raise Exception("Could not find yum distributor for %s" % repo_id)
+
+    def base_working_dir(self, repo_id):
+        return os.path.join(MASTER_PUBLISH_DIR, repo_id)
+
+    def full_working_dir(self, repo_id, time_stamp):
+        return os.path.join(MASTER_PUBLISH_DIR, repo_id, str(time_stamp))
+
+    def clean_path(self, directory, exclude_subdir):
+        for item in os.listdir(directory):
+            if os.path.isdir(os.path.join(directory, item)) and item != exclude_subdir:
+                shutil.rmtree(os.path.join(directory, item))
+
+    def source_working_dir(self, repo_id):
+        relative_path = self.find_yum_distributor(repo_id)['config']['relative_url']
+        symlink = os.path.join(HTTP_PUBLISH_DIR, relative_path)
+        if not os.path.islink(symlink):
+            symlink = os.path.join(HTTPS_PUBLISH_DIR, relative_path)
+        if not os.path.islink(symlink):
+            raise Exception("Could not find a published directory for %s." % repo_id)
+        return os.path.realpath(symlink)
 
     def publish_repo(self, repo, publish_conduit, config):
         publish_start_time = time.time()
         _LOG.info("Start publish time %s" % publish_start_time)
 
-        #lookup the source and destination distributors
-        dist_manager = RepoDistributorManager()
-        destination_dist_config = dist_manager.get_distributor(repo.id, 
-                                                               config.get('destination_distributor_id'))['config']
+        source_repo_id = config.get('source_repo_id')
+        destination_dist_config = self.find_yum_distributor(repo.id)['config']
+        source_working_dir = self.source_working_dir(source_repo_id)
+        working_dir = self.full_working_dir(repo.id, publish_start_time)
 
-        #copy contents from source's working directory to destinations       
-        source_working_dir = self.working_directory(config.get('source_repo_id'))
-        working_dir = self.working_directory(repo.id)
+        os.makedirs(working_dir)
+        #copy contents from source's working directory to destinations
         if not self.copy_directory(source_working_dir, working_dir):
             publish_conduit.set_progress(self.summary)
             raise Exception("Failed to copy metadata.  See errors for more details.")
 
-        #symlink the destination's publish directories 
+        #symlink the destination's publish directories
         if destination_dist_config['http']:
             http_publish_dir = os.path.join(HTTP_PUBLISH_DIR, destination_dist_config["relative_url"]).rstrip('/')
             self.link_directory(working_dir, http_publish_dir)
+            util.generate_listing_files(HTTP_PUBLISH_DIR, http_publish_dir)
 
         if destination_dist_config['https']:
-            https_publish_dir  = os.path.join(HTTPS_PUBLISH_DIR, destination_dist_config["relative_url"]).rstrip('/')
+            https_publish_dir = os.path.join(HTTPS_PUBLISH_DIR, destination_dist_config["relative_url"]).rstrip('/')
             self.link_directory(working_dir, https_publish_dir)
+            util.generate_listing_files(HTTPS_PUBLISH_DIR, https_publish_dir)
+
+        self.clean_path(self.base_working_dir(repo.id), str(publish_start_time))
 
         publish_conduit.set_progress(self.summary)
         if len(self.summary["errors"]) > 0:
@@ -130,11 +161,11 @@ class YumCloneDistributor(Distributor):
     def copy_directory(self, source_dir, destination_dir):
         try:
             if not os.path.exists(source_dir):
-                raise OSError("Source Directory (%s), does not exist, cannot publish.") 
+                raise OSError("Source Directory (%s), does not exist, cannot publish.")
             if os.path.exists(destination_dir):
                 shutil.rmtree(destination_dir)
             shutil.copytree(source_dir, destination_dir, True)
             return True
         except OSError as error:
-            self.add_error(error.message) 
+            self.add_error(error.message)
             return False
