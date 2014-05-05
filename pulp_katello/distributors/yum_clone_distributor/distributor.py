@@ -35,6 +35,10 @@ YUM_CLONE_DISTRIBUTOR_TYPE = "yum_clone_distributor"
 HTTP_PUBLISH_DIR = "/var/lib/pulp/published/http/repos"
 HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/https/repos"
 
+def entry_point():
+    return YumCloneDistributor, {}
+
+
 ###
 # Config Options Explained
 ###

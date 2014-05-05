@@ -5,4 +5,5 @@ sudo pip install -r requirements-dev.pip --use-mirrors
 
 
 echo "Running Pylint"
-pylint --rcfile=./misc/spacewalk-pylint.rc distributors || exit 1
+cd pulp_katello
+pylint --rcfile=../misc/spacewalk-pylint.rc distributors || exit 1

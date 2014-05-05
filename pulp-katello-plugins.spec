@@ -41,26 +41,23 @@ handlers that provide RPM support.
 %setup -q
 
 %build
-
-# Yum Distributor, ISO Plugins, Export Distributor
 %{__python} setup.py build
+
 
 %install
 rm -rf %{buildroot}
-
-mkdir -p %{buildroot}/%{_usr}/lib/pulp/plugins/distributors/
-cp -R distributors/yum_clone_distributor/ %{buildroot}/%{_usr}/lib/pulp/plugins/distributors/
+%{__python} setup.py install -O1 --skip-build --root %{buildroot}
 
 #remove file needed for setup.py
-rm -rf %{buildroot}/%{_usr}/lib/pulp/plugins/distributors/__init__.py*
+#rm -rf %{buildroot}/%{_usr}/lib/pulp/plugins/distributors/__init__.py*
 
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%{_usr}/lib/pulp/plugins/distributors/yum_clone_distributor/
-
+%{python_sitelib}/pulp_katello/
+%{python_sitelib}/pulp_katello_plugins*.egg-info
 %doc LICENSE
 %doc README.md
 
