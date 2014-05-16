@@ -15,7 +15,7 @@
 
 
 Name: pulp-katello-plugins 
-Version: 0.2
+Version: 0.3
 Release: 1%{?dist}
 Summary: Plugins useful for katello interactions with pulp  
 Group: Development/Languages
@@ -60,6 +60,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri May 16 2014 Justin Sherrill <jsherril@redhat.com> 0.3-1
+- Refs #5377 - Adapting for pulp 2.4 support 
+- Fixes #4649 - support index file creation (jsherril@redhat.com)
+
 * Mon Jul 22 2013 Justin Sherrill <jsherril@redhat.com> 0.2-1
 - fixing rpm spec requires to not depend on specific pulp version
   (jsherril@redhat.com)
