@@ -14,9 +14,9 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
 
-Name: pulp-katello-plugins 
+Name: pulp-katello
 Version: 0.3
-Release: 1%{?dist}
+Release: 3%{?dist}
 Summary: Plugins useful for katello interactions with pulp  
 Group: Development/Languages
 License: GPLv2
@@ -31,7 +31,12 @@ BuildRequires:  rpm-python
 
 Requires: python-pulp-rpm-common
 Requires: pulp-server
+Requires: qpid-cpp-client
+Requires: qpid-cpp-server
+Requires: qpid-cpp-server-linearstore
+Requires: qpid-tools
 
+Obsoletes: pulp-katello-plugins
 
 %description
 Provides a collection of platform plugins, client extensions and agent
@@ -60,6 +65,13 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jun 2 2014 Jason Montleon <jmontleo@redhat.com> 0.3-3
+- Obsolete pulp-katello-plugins
+
+* Mon Jun 2 2014 Jason Montleon <jmontleo@redhat.com> 0.3-2
+- Rename package to pulp-katello
+- add qpid dependencies
+
 * Fri May 16 2014 Justin Sherrill <jsherril@redhat.com> 0.3-1
 - Refs #5377 - Adapting for pulp 2.4 support 
 - Fixes #4649 - support index file creation (jsherril@redhat.com)
