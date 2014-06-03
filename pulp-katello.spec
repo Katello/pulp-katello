@@ -33,7 +33,7 @@ Requires: python-pulp-rpm-common
 Requires: pulp-server
 Requires: qpid-cpp-client
 Requires: qpid-cpp-server
-Requires: qpid-cpp-server-linearstore
+Requires: qpid-cpp-server-store
 Requires: qpid-tools
 
 Obsoletes: pulp-katello-plugins
