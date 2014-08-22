@@ -9,6 +9,6 @@ changelog_format = %s (%ae)
 disttag = .el6
 blacklist =
 
-[katello-nightly-fedora19]
-disttag = .fc19
-blacklist = 
+[katello-nightly-rhel7]
+disttag = .el6
+blacklist =
