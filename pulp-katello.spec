@@ -65,6 +65,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Aug 22 2014 Justin Sherrill <jsherril@redhat.com> 0.3-3
+- initial tag of pulp-katello
+
 * Mon Jun 2 2014 Jason Montleon <jmontleo@redhat.com> 0.3-3
 - Obsolete pulp-katello-plugins
 
