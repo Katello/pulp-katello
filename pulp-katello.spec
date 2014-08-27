@@ -29,6 +29,7 @@ BuildRequires:  python-setuptools
 BuildRequires:  python-nose
 BuildRequires:  rpm-python
 
+Requires: cyrus-sasl-plain
 Requires: python-pulp-rpm-common
 Requires: pulp-server
 Requires: qpid-cpp-client
