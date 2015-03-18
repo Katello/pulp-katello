@@ -16,8 +16,8 @@
 
 Name: pulp-katello
 Version: 0.3
-Release: 3%{?dist}
-Summary: Plugins useful for katello interactions with pulp  
+Release: 4%{?dist}
+Summary: Plugins useful for katello interactions with pulp
 Group: Development/Languages
 License: GPLv2
 URL: https://fedorahosted.org/katello/
@@ -34,7 +34,7 @@ Requires: python-pulp-rpm-common
 Requires: pulp-server
 Requires: qpid-cpp-client
 Requires: qpid-cpp-server
-Requires: qpid-cpp-server-store
+Requires: qpid-cpp-server-linearstore
 Requires: qpid-tools
 
 Obsoletes: pulp-katello-plugins
@@ -66,6 +66,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Mar 17 2015 Dustin Tsang<dustint@redhat.com> 0.3-4
+- update to use qpid-cpp-server-linearstore instead of qpid-cpp-server-store
+
 * Fri Aug 22 2014 Justin Sherrill <jsherril@redhat.com> 0.3-3
 - initial tag of pulp-katello
 
