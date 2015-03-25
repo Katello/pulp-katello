@@ -14,6 +14,7 @@ import os
 import gettext
 import shutil
 import time
+from lxml import etree
 
 #pylint: disable=F0401
 from pulp.plugins.distributor import Distributor
@@ -25,6 +26,8 @@ from pulp_rpm.common.ids import TYPE_ID_DISTRO, TYPE_ID_DRPM, TYPE_ID_ERRATA, TY
 
 _LOG = util.getLogger(__name__)
 _ = gettext.gettext
+
+XML_NSMAP = {'repomd': 'http://linux.duke.edu/metadata/repo'}
 
 REQUIRED_CONFIG_KEYS = []
 OPTIONAL_CONFIG_KEYS = ["source_distributor_id", "source_repo_id", "destination_distributor_id"]
@@ -130,11 +133,13 @@ class YumCloneDistributor(Distributor):
             http_publish_dir = os.path.join(HTTP_PUBLISH_DIR, destination_dist_config["relative_url"]).rstrip('/')
             self.link_directory(working_dir, http_publish_dir)
             util.generate_listing_files(HTTP_PUBLISH_DIR, http_publish_dir)
+            self.update_repomd(http_publish_dir)
 
         if destination_dist_config['https']:
             https_publish_dir = os.path.join(HTTPS_PUBLISH_DIR, destination_dist_config["relative_url"]).rstrip('/')
             self.link_directory(working_dir, https_publish_dir)
             util.generate_listing_files(HTTPS_PUBLISH_DIR, https_publish_dir)
+            self.update_repomd(https_publish_dir)
 
         self.clean_path(self.base_working_dir(repo.id), str(publish_start_time))
 
@@ -169,3 +174,24 @@ class YumCloneDistributor(Distributor):
         except OSError as error:
             self.add_error(error.message)
             return False
+
+    def update_repomd(self, repo_path):
+        filename = os.path.join(repo_path, 'repodata/repomd.xml')
+        if not os.path.isfile(filename):
+            _LOG.error("File %s does not exists, cannot update repomd.xml timestamps." % filename)
+            return
+        tree = etree.parse(filename)
+        timestamps = tree.xpath('//repomd:timestamp', namespaces=XML_NSMAP)
+        new_timestamp = str(int(time.time()))
+
+        for timestamp in timestamps:
+            timestamp.text = new_timestamp
+
+        revision = tree.xpath('//repomd:revision', namespaces=XML_NSMAP)[0]
+        revision.text = new_timestamp
+
+        new_content = etree.tostring(tree, pretty_print=True, encoding="UTF-8", xml_declaration=True)
+
+        f = open(filename, 'w')
+        f.write(new_content)
+        f.close()

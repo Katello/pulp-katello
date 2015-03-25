@@ -20,5 +20,6 @@ setup(
         'pulp.distributors': [
             'distributor = pulp_katello.distributors.yum_clone_distributor.distributor:entry_point',
         ],
-    }
+    },
+    install_requires=['lxml']
 )
