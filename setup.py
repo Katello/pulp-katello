@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pulp-katello-plugins',
-    version='0.3',
+    version='0.4',
     license='GPLv2+',
     packages=find_packages(),
     author='Katello Team',

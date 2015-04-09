@@ -15,8 +15,8 @@
 
 
 Name: pulp-katello
-Version: 0.3
-Release: 4%{?dist}
+Version: 0.4
+Release: 1%{?dist}
 Summary: Plugins useful for katello interactions with pulp
 Group: Development/Languages
 License: GPLv2
@@ -68,6 +68,13 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Apr 09 2015 Justin Sherrill <jsherril@redhat.com> 0.4-1
+- fixes #9904 - updated repomd.xml timestamps with every yum_clone publish
+  (jsherril@redhat.com)
+- fixes #9801 - spec require qpid-cpp-server-linearstore instead of qpid-cpp-
+  server-store (dtsang@redhat.com)
+- fixes #7279 - adding Requires on cyrus-sasl-plain (bbuckingham@redhat.com)
+
 * Tue Mar 17 2015 Dustin Tsang<dustint@redhat.com> 0.3-4
 - update to use qpid-cpp-server-linearstore instead of qpid-cpp-server-store
 
