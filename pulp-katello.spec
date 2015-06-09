@@ -63,6 +63,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jun 09 2015 Eric D. Helms <ericdhelms@gmail.com>
+- Fixes #10574: Remove unneeded dependencies from spec file.
+  (ericdhelms@gmail.com)
+
 * Thu Apr 09 2015 Justin Sherrill <jsherril@redhat.com> 0.4-1
 - fixes #9904 - updated repomd.xml timestamps with every yum_clone publish
   (jsherril@redhat.com)
