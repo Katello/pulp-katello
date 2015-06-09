@@ -16,7 +16,7 @@
 
 Name: pulp-katello
 Version: 0.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 Summary: Plugins useful for katello interactions with pulp
 Group: Development/Languages
 License: GPLv2
@@ -63,6 +63,16 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jun 09 2015 Eric D. Helms <ericdhelms@gmail.com> 0.4-2
+- Change to ReleaseTagger. (ericdhelms@gmail.com)
+- Fixes #10574: Remove unneeded dependencies from spec file.
+  (ericdhelms@gmail.com)
+
+* Tue Jun 09 2015 Eric D. Helms <ericdhelms@gmail.com>
+- Change to ReleaseTagger. (ericdhelms@gmail.com)
+- Fixes #10574: Remove unneeded dependencies from spec file.
+  (ericdhelms@gmail.com)
+
 * Tue Jun 09 2015 Eric D. Helms <ericdhelms@gmail.com>
 - Fixes #10574: Remove unneeded dependencies from spec file.
   (ericdhelms@gmail.com)
