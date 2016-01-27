@@ -1,7 +1,7 @@
 #!/bin/bash
 
 sudo apt-get install libssl-dev m2crypto
-sudo pip install -r requirements-dev.pip --use-mirrors
+sudo pip install -r requirements-dev.pip
 
 
 echo "Running Pylint"
