@@ -18,11 +18,10 @@ from lxml import etree
 
 #pylint: disable=F0401
 from pulp.plugins.distributor import Distributor
-from pulp.server.managers.repo.distributor import RepoDistributorManager
-
+from pulp.server.db import model
 from pulp_rpm.yum_plugin import util
 from pulp_rpm.common.ids import TYPE_ID_DISTRO, TYPE_ID_DRPM, TYPE_ID_ERRATA, TYPE_ID_PKG_GROUP, \
-                                TYPE_ID_PKG_CATEGORY, TYPE_ID_RPM, TYPE_ID_SRPM
+                                TYPE_ID_PKG_CATEGORY, TYPE_ID_RPM, TYPE_ID_SRPM, TYPE_ID_DISTRIBUTOR_YUM
 
 _LOG = util.getLogger(__name__)
 _ = gettext.gettext
@@ -87,9 +86,8 @@ class YumCloneDistributor(Distributor):
         return True, None
 
     def find_yum_distributor(self, repo_id):
-        dist_manager = RepoDistributorManager()
-        for dist in dist_manager.get_distributors(repo_id):
-            if dist["distributor_type_id"] == 'yum_distributor':
+        for dist in model.Distributor.objects(repo_id=repo_id):
+            if dist.distributor_type_id == TYPE_ID_DISTRIBUTOR_YUM:
                 return dist
         raise Exception("Could not find yum distributor for %s" % repo_id)
 
