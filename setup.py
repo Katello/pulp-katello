@@ -10,12 +10,12 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='pulp-katello-plugins',
-    version='0.4',
+    name='pulp-katello',
+    version='1.0',
     license='GPLv2+',
     packages=find_packages(),
     author='Katello Team',
-    author_email='katello-devel@redhat.com',
+    author_email='foreman-dev@googlegroups.com',
     entry_points = {
         'pulp.distributors': [
             'distributor = pulp_katello.distributors.yum_clone_distributor.distributor:entry_point',
