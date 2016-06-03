@@ -33,7 +33,7 @@ OPTIONAL_CONFIG_KEYS = ["source_distributor_id", "source_repo_id", "destination_
 
 YUM_CLONE_DISTRIBUTOR_TYPE = "yum_clone_distributor"
 
-MASTER_PUBLISH_DIR = "/var/lib/pulp/published/yum/master"
+MASTER_PUBLISH_DIR = "/var/lib/pulp/published/yum/master/yum_distributor"
 HTTP_PUBLISH_DIR = "/var/lib/pulp/published/yum/http/repos"
 HTTPS_PUBLISH_DIR = "/var/lib/pulp/published/yum/https/repos"
 
