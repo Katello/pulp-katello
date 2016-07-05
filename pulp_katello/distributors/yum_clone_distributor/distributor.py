@@ -164,7 +164,7 @@ class YumCloneDistributor(Distributor):
     def copy_directory(self, source_dir, destination_dir):
         try:
             if not os.path.exists(source_dir):
-                raise OSError("Source Directory (%s), does not exist, cannot publish.")
+                raise OSError("Source Directory (%s), does not exist, cannot publish." % source_dir)
             if os.path.exists(destination_dir):
                 shutil.rmtree(destination_dir)
             shutil.copytree(source_dir, destination_dir, True)
