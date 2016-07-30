@@ -14,6 +14,7 @@ import os
 import gettext
 import shutil
 import time
+import errno
 from lxml import etree
 
 #pylint: disable=F0401
@@ -120,7 +121,7 @@ class YumCloneDistributor(Distributor):
         source_working_dir = self.source_working_dir(source_repo_id)
         working_dir = self.full_working_dir(repo.id, publish_start_time)
 
-        os.makedirs(working_dir)
+        self.safe_makedirs(working_dir)
         #copy contents from source's working directory to destinations
         if not self.copy_directory(source_working_dir, working_dir):
             publish_conduit.set_progress(self.summary)
@@ -154,12 +155,20 @@ class YumCloneDistributor(Distributor):
                 os.unlink(destination)
             base_path = os.path.split(destination)[0]
             if not os.path.exists(base_path):
-                os.makedirs(base_path)
+                self.safe_makedirs(base_path)
             os.symlink(source, destination)
             return True
         except OSError as error:
             self.add_error(error.message)
             return False
+
+    def safe_makedirs(self, path):
+        try:
+            if not os.path.exists(path):
+                os.makedirs(path)
+        except OSError as error:
+            if error.errno != errno.EEXIST:
+                raise error
 
     def copy_directory(self, source_dir, destination_dir):
         try:
