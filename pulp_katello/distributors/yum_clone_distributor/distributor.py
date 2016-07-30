@@ -105,12 +105,22 @@ class YumCloneDistributor(Distributor):
 
     def source_working_dir(self, repo_id):
         relative_path = self.find_yum_distributor(repo_id)['config']['relative_url']
-        symlink = os.path.join(HTTP_PUBLISH_DIR, relative_path)
-        if not os.path.islink(symlink):
-            symlink = os.path.join(HTTPS_PUBLISH_DIR, relative_path)
-        if not os.path.islink(symlink):
+        realpath = self.valid_symlink_dest(os.path.join(HTTPS_PUBLISH_DIR, relative_path))
+
+        if not realpath:
+            realpath = self.valid_symlink_dest(os.path.join(HTTP_PUBLISH_DIR, relative_path))
+        if not realpath:
             raise Exception("Could not find a published directory for %s." % repo_id)
-        return os.path.realpath(symlink)
+        return realpath
+
+    def valid_symlink_dest(self, path):
+        if not os.path.islink(path):
+            raise Exception('%s exists, but should be a symlink.  Cannot find published directory.' % path)
+        realpath = os.path.realpath(path)
+        if os.path.exists(realpath):
+            return realpath
+        else:
+            return None
 
     def publish_repo(self, repo, publish_conduit, config):
         publish_start_time = time.time()
@@ -179,7 +189,7 @@ class YumCloneDistributor(Distributor):
             shutil.copytree(source_dir, destination_dir, True)
             return True
         except OSError as error:
-            self.add_error(error.message)
+            self.add_error(error.message or error.strerror)
             return False
 
     def update_repomd(self, repo_path):
