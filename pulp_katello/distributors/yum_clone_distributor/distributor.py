@@ -169,7 +169,7 @@ class YumCloneDistributor(Distributor):
             os.symlink(source, destination)
             return True
         except OSError as error:
-            self.add_error(error.message)
+            self.add_error(error.message or error.strerror)
             return False
 
     def safe_makedirs(self, path):
