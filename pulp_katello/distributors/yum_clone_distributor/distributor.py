@@ -161,7 +161,7 @@ class YumCloneDistributor(Distributor):
     def link_directory(self, source, destination):
         try:
             destination = destination.rstrip('/')
-            if os.path.exists(destination):
+            if os.path.lexists(destination):
                 os.unlink(destination)
             base_path = os.path.split(destination)[0]
             if not os.path.exists(base_path):
